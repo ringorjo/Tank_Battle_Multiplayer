@@ -42,7 +42,7 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
 
     public override void OnNetworkSpawn()
     {
-        StartCoroutine(WaitForSetup());// Se llama en cada local una vez un player se ha spameado
+        StartCoroutine(WaitForSetup());
 
         if (IsOwner)
         {

@@ -34,14 +34,12 @@ public class SessionManagerService : MonoBehaviour, IService
 
     public void AddPlayer(Player player)
     {
-        Debug.Log("Added Player: " + player.PlayerName.Value.ToString());
-
         if (!_players.ContainsKey(player.OwnerId))
         {
             _players.Add(player.OwnerId, player);
             OnPlayerJoined?.Invoke(player);
+            Debug.Log("Added Player: " + player.PlayerName.Value.ToString());
         }
-        Debug.Log("Players: " + _players.Count);
 
     }
 
