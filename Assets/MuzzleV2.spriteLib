@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Library:
+  - m_Name: New Category
+    m_Hash: 259530823
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: Flash_A_01
+      m_Hash: 529314435
+      m_Sprite: {fileID: 21300000, guid: e50d846c9b40f244a8bdb5fdf335b1a3, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: e50d846c9b40f244a8bdb5fdf335b1a3, type: 3}
+    - m_Name: Flash_A_02
+      m_Hash: 109437753
+      m_Sprite: {fileID: 21300000, guid: e569c24b8a820344ea1d8b12138cc1b7, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: e569c24b8a820344ea1d8b12138cc1b7, type: 3}
+    - m_Name: Flash_A_03
+      m_Hash: 830657455
+      m_Sprite: {fileID: 21300000, guid: 3d1b730ba0bd0ad4c8438c0aed0408dc, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 3d1b730ba0bd0ad4c8438c0aed0408dc, type: 3}
+    - m_Name: Flash_A_04
+      m_Hash: 803620364
+      m_Sprite: {fileID: 21300000, guid: 7dec25f5583b622438fadfcb4735c5a8, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 7dec25f5583b622438fadfcb4735c5a8, type: 3}
+    - m_Name: Flash_A_05
+      m_Hash: 417429146
+      m_Sprite: {fileID: 21300000, guid: 0566fa3b1b00539409e0524c08d672ba, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 0566fa3b1b00539409e0524c08d672ba, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 5
+  m_PrimaryLibraryGUID: 
+  m_ModificationHash: 639028898313466463
+  m_Version: 1

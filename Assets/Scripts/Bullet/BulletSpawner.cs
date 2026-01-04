@@ -27,10 +27,6 @@ public class BulletSpawner : NetworkBehaviour
     );
 
     /// <summary>
-    /// hay que instanciar una pool local la cual mostrara solo efectos visuales y otra en el servidor que manejara la logica de las balas y colisiones.
-    /// </summary>
-
-    /// <summary>
     /// Notes : Only the Server must spawn and despawn Netcode objects. in this case bullets. Only must be handled by the server on the server authoritative networking model  .
     /// ClientRpc are used to update visual effects on clients, UI Stuff, when a bullet is fired or stuff that no have NetworkObject.
     /// 
@@ -43,7 +39,6 @@ public class BulletSpawner : NetworkBehaviour
         if (IsOwner)
         {
             _inputReader.OnFireEvent += OnSpawnBullet;
-            _player = ServiceLocator.Instance.Get<Player>();
         }
     }
 
@@ -60,16 +55,17 @@ public class BulletSpawner : NetworkBehaviour
         _bulletPool = new ObjectPool<BulletBase>(_clientBullet.gameObject, _bulletSpawn);
         _bulletPool.InitPool(_initBulletPoolCapacity, "ClientBullet");
         _serverBulletService = ServiceLocator.Instance.Get<ServerNetworkSpawnerBulletService>();
+        _player = GetComponent<Player>();
     }
 
     private void OnSpawnBullet(bool ispressed)
     {
+
         BulletInfo.Value = new BulletInfo
         {
             PlayerOwner = _player.PlayerName.Value.ToString(),
             Damage = _projectileData.DamageAmount
         };
-        Debug.Log($"Owner2: {BulletInfo.Value.PlayerOwner} ");
         ActionFire(ispressed);
         SpawnBulletServerRpc(ispressed);
     }
@@ -96,10 +92,11 @@ public class BulletSpawner : NetworkBehaviour
     [ServerRpc]
     private void SpawnBulletServerRpc(bool isPressed)
     {
-        SpawnDummyBulletClientRpc(isPressed);
         MuzzleUpdateViewClientRpc(isPressed);
+        SpawnDummyBulletClientRpc(isPressed);
         SpawnServerBullet(BulletInfo.Value, isPressed);
-
+        if (isPressed)
+            _player?.UpdateAmmoLenght();
     }
 
 

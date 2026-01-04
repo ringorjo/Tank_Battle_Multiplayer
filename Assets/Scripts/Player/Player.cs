@@ -13,9 +13,51 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
 
     [SerializeField]
     private int _maxHealth = 100;
-    private ulong _ownerId = 0;
+    [SerializeField]
+    private int _maxBullets = 5;
 
-    public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
+
+    public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>(
+        100,
+         NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+        );
+
+    public NetworkVariable<ulong> PlayerOwnerId = new(
+   99,
+   NetworkVariableReadPermission.Everyone,
+   NetworkVariableWritePermission.Server
+);
+
+    public NetworkVariable<int> Bullets = new(
+       5,
+       NetworkVariableReadPermission.Everyone,
+       NetworkVariableWritePermission.Server
+   );
+
+    public NetworkVariable<int> Lives = new(
+        3,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+
+    public bool CanShoot
+    {
+        get => Bullets.Value > 0;
+    }
+
+    public void UpdateAmmoLenght()
+    {
+        if (Bullets.Value > 0)
+            Bullets.Value--;
+    }
+    public void ReloadAmmo(int ammoCount)
+    {
+        if (!IsServer)
+            return;
+        Bullets.Value += ammoCount;
+    }
 
     [HideInInspector]
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
@@ -31,10 +73,11 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
     {
         get => _maxHealth;
     }
-    public ulong OwnerId
+    public int MaxBullets
     {
-        get => _ownerId;
+        get => _maxBullets;
     }
+
     private void Awake()
     {
         _sessionManagerService = ServiceLocator.Instance.Get<SessionManagerService>();
@@ -43,7 +86,6 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
     public override void OnNetworkSpawn()
     {
         StartCoroutine(WaitForSetup());
-
         if (IsOwner)
         {
             Register();
@@ -54,16 +96,23 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
 
     private IEnumerator WaitForSetup()
     {
-        yield return new WaitUntil(() => PlayerName.Value.Length > 0);
+        yield return new WaitUntil(() => PlayerOwnerId.Value != 99);
+        AddLocalPlayer();
+    }
+
+    public void AddLocalPlayer()
+    {
         gameObject.name = PlayerName.Value.ToString();
         _sessionManagerService?.AddPlayer(this);
     }
 
+    //Only Server or Host SetPlayer
     public void SetupPlayer(ulong clientId)
     {
-        _ownerId = clientId;
-        PlayerName.Value = $"Player_{_ownerId}";
+        PlayerOwnerId.Value = clientId;
+        PlayerName.Value = $"Player_{PlayerOwnerId.Value}";
         CurrentHealth.Value = _maxHealth;
+        Bullets.Value = 5;
     }
 
     public override void OnNetworkDespawn()

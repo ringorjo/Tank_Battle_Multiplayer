@@ -27,7 +27,5 @@ public class PlayerSpawner : MonoBehaviour
         }
         await Task.Delay(200); // Wait for the PlayerName to be set
         player.name = player.PlayerName.Value.ToString();
-        Debug.Log("Player connected: " + player.name);
-
     }
 }

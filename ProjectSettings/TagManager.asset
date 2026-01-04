@@ -47,8 +47,14 @@ TagManager:
   - name: Terrain
     uniqueID: 3233959411
     locked: 0
+  - name: Coin
+    uniqueID: 2772838147
+    locked: 0
   - name: Player
     uniqueID: 3306948629
+    locked: 0
+  - name: Covers
+    uniqueID: 505210829
     locked: 0
   m_RenderingLayers:
   - Default

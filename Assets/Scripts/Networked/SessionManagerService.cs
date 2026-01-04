@@ -11,11 +11,10 @@ public class SessionManagerService : MonoBehaviour, IService
     private Dictionary<ulong, Player> _players = new Dictionary<ulong, Player>();
 
 
-    private void Awake()
-    {
-        Register();
-    }
- 
+    private void Awake() => Register();
+    private void OnDestroy() => Unregister();
+    public void Register() => ServiceLocator.Instance.Register(this);
+    public void Unregister() => ServiceLocator.Instance.Unregister(this);
 
     public Player GetPlayerByOwnerId(ulong ownerId)
     {
@@ -34,31 +33,24 @@ public class SessionManagerService : MonoBehaviour, IService
 
     public void AddPlayer(Player player)
     {
-        if (!_players.ContainsKey(player.OwnerId))
+        if (!_players.ContainsKey(player.PlayerOwnerId.Value))
         {
-            _players.Add(player.OwnerId, player);
+            _players.Add(player.PlayerOwnerId.Value, player);
             OnPlayerJoined?.Invoke(player);
-            Debug.Log("Added Player: " + player.PlayerName.Value.ToString());
+            Debug.Log($"Player Joined; {player.PlayerName.Value}");
+
+            return;
         }
 
+        Debug.Log($"Key already Added: {player.PlayerOwnerId.Value} ");
     }
 
     public void RemovePlayer(Player player)
     {
-        if (_players.ContainsKey(player.OwnerId))
+        if (_players.ContainsKey(player.PlayerOwnerId.Value))
         {
-            _players.Remove(player.OwnerId);
+            _players.Remove(player.PlayerOwnerId.Value);
             OnPlayerLeft?.Invoke(player);
         }
     }
-
-
-    private void OnDestroy()
-    {
-        Unregister();
-    }
-
-    public void Register() => ServiceLocator.Instance.Register(this);
-    public void Unregister() => ServiceLocator.Instance.Unregister(this);
-
 }

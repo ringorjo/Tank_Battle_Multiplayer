@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TankMovement : NetworkBehaviour
 {
+    public event Action<float> OnSpeedChanged;
     [Header("References")]
     [SerializeField]
     private InputReader _inputActionAsset;
@@ -20,6 +21,7 @@ public class TankMovement : NetworkBehaviour
     private float _rotSpeed;
     private float _boost = 1;
     private Vector2 _currentDirection;
+    private float _speed;
 
 
     public override void OnNetworkSpawn()
@@ -33,7 +35,6 @@ public class TankMovement : NetworkBehaviour
 
     private void OnApplyBoost(bool ispressed)
     {
-        Debug.Log("IsPressed");
         _boost = !ispressed ? 1 : _boostSpeed;
     }
 
@@ -59,14 +60,17 @@ public class TankMovement : NetworkBehaviour
     {
         if (!IsOwner)
             return;
-        float speed = _movementSpeed * _boost;
-        _rb.linearVelocity = _bodyTank.up * _currentDirection.y * speed;
+        _speed = _movementSpeed * _boost;
+        Vector2 targetVelocity = _bodyTank.up * _currentDirection.y * _speed;
+        _rb.linearVelocity = Vector2.Lerp(_rb.linearVelocity, targetVelocity, Time.fixedDeltaTime * 5);
+        float currentSpeed = _rb.linearVelocity.magnitude;
+        float speedChanged = Mathf.Clamp01(currentSpeed / _speed);
+        OnSpeedChanged?.Invoke(speedChanged);
 
     }
 
     private void OnMoveTank(Vector2 vector)
     {
         _currentDirection = vector;
-
     }
 }
