@@ -8,11 +8,13 @@ public class PlayerSpawner : MonoBehaviour
     {
         /// This callback is invoked on the server when a new client connects or Local Client is Connected.
         /// This Callback is NOT invoked on the client side. example to Know when other clients connect
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
     private void OnDestroy()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
     }
 
     private async void OnClientConnected(ulong ownerClienId)

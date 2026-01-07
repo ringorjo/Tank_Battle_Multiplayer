@@ -15,9 +15,9 @@ public class RemotePlayerHud : MonoBehaviour
 
     private void Start()
     {
-        _player.CurrentHealth.OnValueChanged += OnHealthUpdated;
+        _player.PlayerStats.CurrentHealth.OnValueChanged += OnHealthUpdated;
         _player.PlayerName.OnValueChanged += OnPlayerUpdated;
-        OnHealthUpdated(0, _player.CurrentHealth.Value);
+        OnHealthUpdated(0, _player.PlayerStats.CurrentHealth.Value);
         OnPlayerUpdated(string.Empty, _player.PlayerName.Value);
         if (_player.IsOwner)
             gameObject.SetActive(false);
@@ -25,13 +25,13 @@ public class RemotePlayerHud : MonoBehaviour
     private void OnDestroy()
     {
 
-        _player.CurrentHealth.OnValueChanged -= OnHealthUpdated;
+        _player.PlayerStats.CurrentHealth.OnValueChanged -= OnHealthUpdated;
         _player.PlayerName.OnValueChanged -= OnPlayerUpdated;
     }
 
-    private void OnHealthUpdated(int previousValue, int newValue)
+    private void OnHealthUpdated(float previousValue, float newValue)
     {
-        _healthBar.fillAmount = (float)newValue / _player.MaxHealth;
+        _healthBar.fillAmount = (float)newValue / _player.PlayerStats.MaxHealth;
     }
 
     private void OnPlayerUpdated(FixedString32Bytes previousValue, FixedString32Bytes newValue)

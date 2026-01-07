@@ -8,24 +8,31 @@ public class BulletSpawner : NetworkBehaviour
     [SerializeField]
     private BulletBase _clientBullet;
     [SerializeField]
-    private ProjectileData _projectileData;
+    private BulletType _bulletType;
     [SerializeField]
     private Transform _bulletSpawn;
     [SerializeField]
     private GameObject _muzzleObject;
     [SerializeField]
     private int _initBulletPoolCapacity;
+    [SerializeField]
+    private int _maxBulletsCapacity;
     private ObjectPool<BulletBase> _bulletPool;
     private ServerNetworkSpawnerBulletService _serverBulletService;
     private Player _player;
     private NetworkObject _serverBulletNetworkObject;
-
-    public NetworkVariable<BulletInfo> BulletInfo = new NetworkVariable<BulletInfo>(
+    private BulletSelectorFactory _bulletSelectorFactory;
+    private IProjectileInfo _currentProjectileInfoUsed;
+    public NetworkVariable<ProjectileContext> BulletInfo = new NetworkVariable<ProjectileContext>(
         default,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
 
+    public IProjectileInfo CurrentProjectileInfoUsed
+    {
+        get => _currentProjectileInfoUsed;
+    }
     /// <summary>
     /// Notes : Only the Server must spawn and despawn Netcode objects. in this case bullets. Only must be handled by the server on the server authoritative networking model  .
     /// ClientRpc are used to update visual effects on clients, UI Stuff, when a bullet is fired or stuff that no have NetworkObject.
@@ -38,7 +45,10 @@ public class BulletSpawner : NetworkBehaviour
     {
         if (IsOwner)
         {
+            _bulletSelectorFactory = new BulletSelectorFactory(5);
+            _currentProjectileInfoUsed = _bulletSelectorFactory.GetBulletByType(_bulletType);
             _inputReader.OnFireEvent += OnSpawnBullet;
+
         }
     }
 
@@ -61,18 +71,25 @@ public class BulletSpawner : NetworkBehaviour
     private void OnSpawnBullet(bool ispressed)
     {
 
-        BulletInfo.Value = new BulletInfo
+        BulletInfo.Value = new ProjectileContext
         {
             PlayerOwner = _player.PlayerName.Value.ToString(),
-            Damage = _projectileData.DamageAmount
+            Damage = _currentProjectileInfoUsed.Damage,
+            Lifetime = _currentProjectileInfoUsed.LifeTime,
+            BulletSpeed = _currentProjectileInfoUsed.BulletSpeed
         };
         ActionFire(ispressed);
         SpawnBulletServerRpc(ispressed);
+           
     }
     private void ActionFire(bool ispressed)
     {
         if (ispressed)
+        {
             _bulletPool.GetObject();
+            UpdateRainingBullet();
+        }
+            
     }
 
     [ClientRpc]
@@ -95,13 +112,28 @@ public class BulletSpawner : NetworkBehaviour
         MuzzleUpdateViewClientRpc(isPressed);
         SpawnDummyBulletClientRpc(isPressed);
         SpawnServerBullet(BulletInfo.Value, isPressed);
-        if (isPressed)
-            _player?.UpdateAmmoLenght();
+    }
+
+    private void UpdateRainingBullet()
+    {
+        if (!IsOwner)
+            return;
+        _currentProjectileInfoUsed?.UpdateRemaingAmmount();
+    }
+
+    public void ReloadAmmo()
+    {
+        if(_currentProjectileInfoUsed==null)
+        {
+            Debug.LogError("CurrentProjectile Info is NUll");
+            return;
+        }
+        _currentProjectileInfoUsed.ReloadAmmo();
     }
 
 
 
-    private void SpawnServerBullet(BulletInfo bulletInfo, bool isPressed)
+    private void SpawnServerBullet(ProjectileContext bulletInfo, bool isPressed)
     {
         if (!isPressed)
             return;

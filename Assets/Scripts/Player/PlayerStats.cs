@@ -3,11 +3,9 @@ using UnityEngine;
 
 public class PlayerStats : NetworkBehaviour
 {
-    public NetworkVariable<int> Bullets = new(
-      5,
-      NetworkVariableReadPermission.Everyone,
-      NetworkVariableWritePermission.Server
-  );
+
+    [SerializeField]
+    private float _maxHealth;
 
     public NetworkVariable<int> Lives = new(
         3,
@@ -15,9 +13,15 @@ public class PlayerStats : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
-    public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>(
+    public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>(
        100,
         NetworkVariableReadPermission.Everyone,
        NetworkVariableWritePermission.Server
        );
+
+    public float MaxHealth
+    {
+        get => _maxHealth;
+    }
+  
 }

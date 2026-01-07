@@ -27,10 +27,11 @@ public abstract class BulletBase : MonoBehaviour, IPoolObject
         Invoke(nameof(OnDestroyBullet), _projectileData.LifeTime);
     }
 
-    public void OnDestroyBullet()
+    protected void OnDestroyBullet()
     {
         _objectPool.RecycleObject(this);
+        CancelInvoke();
         Debug.Log("Recycle Bullet");
     }
 }
-     
+    

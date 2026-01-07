@@ -1,4 +1,3 @@
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
     protected Rigidbody2D _rb;
     [SerializeField]
     protected ProjectileData _projectileData;
-    private BulletInfo _bulletInfo;
+    private ProjectileContext _bulletInfo;
     private ObjectPool<ServerBullet> _objectPool;
     public GameObject GameObject => gameObject;
 
@@ -22,7 +21,7 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
         // transform.SetParent(null);
     }
 
-    public void SetPlayerOwner(BulletInfo bulletInfo)
+    public void SetPlayerOwner(ProjectileContext bulletInfo)
     {
         Debug.Log($"Owner: {bulletInfo.PlayerOwner}");
 
@@ -31,7 +30,7 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
 
     public void OnDespawn(Transform parent)
     {
-        _bulletInfo = new BulletInfo();
+        _bulletInfo = new ProjectileContext();
     }
 
     public override void OnNetworkDespawn()
@@ -55,7 +54,7 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
         {
             component.TakeDamage(_bulletInfo);
             OnDestroyBullet();
-            CancelInvoke();
+            CancelInvoke(nameof(OnDestroyBullet));
         }
     }
 

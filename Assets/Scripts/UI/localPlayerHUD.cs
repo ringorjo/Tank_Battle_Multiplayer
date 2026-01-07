@@ -24,9 +24,9 @@ public class localPlayerHUD : MonoBehaviour
     {
         if (_player != null)
         {
-            _player.CurrentHealth.OnValueChanged -= OnHealthUpdated;
-            _player.Lives.OnValueChanged -= OnLifesUpdated;
-            _player.Bullets.OnValueChanged -= OnAmmoLenghUpdated;
+            _player.PlayerStats.CurrentHealth.OnValueChanged -= OnHealthUpdated;
+            _player.PlayerStats.Lives.OnValueChanged -= OnLifesUpdated;
+            _player.BulletProvider.CurrentProjectileInfoUsed.OnBulletRoundsChanged -= OnAmmoLenghUpdated;
             _player.PlayerName.OnValueChanged -= OnPlayerUpdated;
         }
     }
@@ -34,9 +34,9 @@ public class localPlayerHUD : MonoBehaviour
     public void SetupLocalPlayer(Player player)
     {
         _player = player;
-        _player.CurrentHealth.OnValueChanged += OnHealthUpdated;
-        _player.Lives.OnValueChanged += OnLifesUpdated;
-        _player.Bullets.OnValueChanged += OnAmmoLenghUpdated;
+        _player.PlayerStats.CurrentHealth.OnValueChanged += OnHealthUpdated;
+        _player.PlayerStats.Lives.OnValueChanged += OnLifesUpdated;
+        _player.BulletProvider.CurrentProjectileInfoUsed.OnBulletRoundsChanged += OnAmmoLenghUpdated;
         _player.PlayerName.OnValueChanged += OnPlayerUpdated;
         InitViewData(player);
     }
@@ -44,9 +44,9 @@ public class localPlayerHUD : MonoBehaviour
     private void InitViewData(Player player)
     {
         OnPlayerUpdated(string.Empty, player.PlayerName.Value);
-        OnLifesUpdated(0, player.Lives.Value);
-        OnAmmoLenghUpdated(0, player.Bullets.Value);
-        OnHealthUpdated(0, player.CurrentHealth.Value);
+        OnLifesUpdated(0, player.PlayerStats.Lives.Value);
+        OnAmmoLenghUpdated(player.BulletProvider.CurrentProjectileInfoUsed.RoundsRemaining);
+        OnHealthUpdated(0, player.PlayerStats.CurrentHealth.Value);
     }
 
     private void OnPlayerUpdated(FixedString32Bytes previousValue, FixedString32Bytes newValue)
@@ -60,12 +60,12 @@ public class localPlayerHUD : MonoBehaviour
     }
 
     float ammofill;
-    private void OnAmmoLenghUpdated(int previousValue, int newValue)
+    private void OnAmmoLenghUpdated( int reamainingAmmo)
     {
-        ammofill = (float)newValue / _player.MaxBullets;
+        ammofill = (float)reamainingAmmo / _player.BulletProvider.CurrentProjectileInfoUsed.MaxAmmoCount;
         _ammoBar.fillAmount = ammofill;
     }
 
-    private void OnHealthUpdated(int previousValue, int newValue) => _healthBar.fillAmount = (float)newValue / _player.MaxHealth;
+    private void OnHealthUpdated(float previousValue, float newValue) => _healthBar.fillAmount = (float)newValue / _player.PlayerStats.MaxHealth;
 
 }

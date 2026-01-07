@@ -9,56 +9,11 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
 
     public Action OnDie;
 
-    [Header("Player Settings")]
-
-    [SerializeField]
-    private int _maxHealth = 100;
-    [SerializeField]
-    private int _maxBullets = 5;
-
-
-    public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>(
-        100,
-         NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-        );
-
     public NetworkVariable<ulong> PlayerOwnerId = new(
-   99,
-   NetworkVariableReadPermission.Everyone,
-   NetworkVariableWritePermission.Server
-);
-
-    public NetworkVariable<int> Bullets = new(
-       5,
-       NetworkVariableReadPermission.Everyone,
-       NetworkVariableWritePermission.Server
-   );
-
-    public NetworkVariable<int> Lives = new(
-        3,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
+    99,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server
     );
-
-
-    public bool CanShoot
-    {
-        get => Bullets.Value > 0;
-    }
-
-    public void UpdateAmmoLenght()
-    {
-        if (Bullets.Value > 0)
-            Bullets.Value--;
-    }
-    public void ReloadAmmo(int ammoCount)
-    {
-        if (!IsServer)
-            return;
-        Bullets.Value += ammoCount;
-    }
-
     [HideInInspector]
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
 
@@ -67,20 +22,23 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
     private GameObject _camera;
 
     private SessionManagerService _sessionManagerService;
+    private BulletSpawner _bulletProvider;
 
-
-    public int MaxHealth
+    private PlayerStats _playerStats;
+    public PlayerStats PlayerStats
     {
-        get => _maxHealth;
+        get => _playerStats;
     }
-    public int MaxBullets
+    public BulletSpawner BulletProvider
     {
-        get => _maxBullets;
+        get => _bulletProvider;
     }
 
     private void Awake()
     {
         _sessionManagerService = ServiceLocator.Instance.Get<SessionManagerService>();
+        _playerStats = GetComponent<PlayerStats>();
+        _bulletProvider = GetComponent<BulletSpawner>();
     }
 
     public override void OnNetworkSpawn()
@@ -111,8 +69,7 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
     {
         PlayerOwnerId.Value = clientId;
         PlayerName.Value = $"Player_{PlayerOwnerId.Value}";
-        CurrentHealth.Value = _maxHealth;
-        Bullets.Value = 5;
+        _playerStats.CurrentHealth.Value = _playerStats.MaxHealth;
     }
 
     public override void OnNetworkDespawn()
@@ -125,7 +82,7 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
         }
     }
 
-    public void TakeDamage(BulletInfo bulletInfo)
+    public void TakeDamage(ProjectileContext bulletInfo)
     {
         if (!IsServer || bulletInfo.PlayerOwner == PlayerName.Value)
         {
@@ -133,7 +90,7 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
         }
 
         UpdateHealth(bulletInfo.Damage, true);
-        if (CurrentHealth.Value <= 0)
+        if (_playerStats.CurrentHealth.Value <= 0)
         {
             OnDie?.Invoke();
         }
@@ -150,17 +107,12 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
 
     private void UpdateHealth(int newHealth, bool istakeDamage = false)
     {
-        int value = istakeDamage ? CurrentHealth.Value - newHealth : CurrentHealth.Value + newHealth;
-        CurrentHealth.Value = Mathf.Clamp(value, 0, _maxHealth);
+        float value = istakeDamage ? _playerStats.CurrentHealth.Value - newHealth : _playerStats.CurrentHealth.Value + newHealth;
+        _playerStats.CurrentHealth.Value = Mathf.Clamp(value, 0, _playerStats.MaxHealth);
     }
 
-    public void Register()
-    {
-        ServiceLocator.Instance.Register(this);
-    }
+    public void Register() => ServiceLocator.Instance.Register(this);
 
-    public void Unregister()
-    {
-        ServiceLocator.Instance?.Unregister(this);
-    }
+    public void Unregister() => ServiceLocator.Instance.Unregister(this);
+
 }

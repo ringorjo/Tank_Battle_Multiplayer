@@ -26,11 +26,12 @@ public class CoinCollector : NetworkBehaviour
 
     private void HandleCoinCollector(Coin coin)
     {
+        Debug.Log("HandleCoinCollector: "+ coin.CoinType);
         switch (coin.CoinType)
         {
             case CoinType.Ammo:
                 BulletCoin bulletCoin = (BulletCoin)coin;
-                _player.ReloadAmmo(bulletCoin.BulletAmount);
+                _player.BulletProvider.ReloadAmmo();
                 break;
             case CoinType.Life:
                 break;

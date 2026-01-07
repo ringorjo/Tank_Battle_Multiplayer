@@ -1,6 +1,6 @@
 public interface IDamage
 {
-    void TakeDamage(BulletInfo bulletInfo);
+    void TakeDamage(ProjectileContext bulletInfo);
 }
 
 

@@ -1116,10 +1116,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1076382108609444976}
-  - component: {fileID: 4203756890481805307}
-  - component: {fileID: 234596215538730256}
   - component: {fileID: 3888594956443873496}
   - component: {fileID: 5915236102545637591}
+  - component: {fileID: 4203756890481805307}
+  - component: {fileID: 234596215538730256}
+  - component: {fileID: 2231745821138057606}
   - component: {fileID: 3775801249545359882}
   - component: {fileID: 6627686693586973803}
   - component: {fileID: 5191962433575919169}
@@ -1153,90 +1154,6 @@ Transform:
   - {fileID: 2439149825506653284}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4203756890481805307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209291034038932970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3190375271
-  InScenePlacedSourceGlobalObjectIdHash: 3190375271
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
---- !u!114 &234596215538730256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209291034038932970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 196aaf7b4d83114429c6c9deec13a11e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  _maxHealth: 100
-  _maxBullets: 5
-  CurrentHealth:
-    m_InternalValue: 100
-  PlayerOwnerId:
-    m_InternalValue: 99
-  Bullets:
-    m_InternalValue: 5
-  Lives:
-    m_InternalValue: 3
-  PlayerName:
-    m_InternalValue:
-      utf8LengthInBytes: 0
-      bytes:
-        offset0000:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
-          byte0009: 0
-          byte0010: 0
-          byte0011: 0
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        byte0016: 0
-        byte0017: 0
-        byte0018: 0
-        byte0019: 0
-        byte0020: 0
-        byte0021: 0
-        byte0022: 0
-        byte0023: 0
-        byte0024: 0
-        byte0025: 0
-        byte0026: 0
-        byte0027: 0
-        byte0028: 0
-        byte0029: 0
-  _camera: {fileID: 8291613817249594443}
 --- !u!61 &3888594956443873496
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1294,8 +1211,8 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
-  m_UseAutoMass: 1
-  m_Mass: 4.18
+  m_UseAutoMass: 0
+  m_Mass: 1000000
   m_LinearDamping: 0
   m_AngularDamping: 0
   m_GravityScale: 0
@@ -1310,6 +1227,100 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &4203756890481805307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3190375271
+  InScenePlacedSourceGlobalObjectIdHash: 3190375271
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &234596215538730256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 196aaf7b4d83114429c6c9deec13a11e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  PlayerOwnerId:
+    m_InternalValue: 99
+  PlayerName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  _camera: {fileID: 8291613817249594443}
+--- !u!114 &2231745821138057606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 135ae13f6a8a04f47851489a3c2ff7b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  _maxHealth: 100
+  Lives:
+    m_InternalValue: 3
+  CurrentHealth:
+    m_InternalValue: 100
 --- !u!114 &3775801249545359882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1407,10 +1418,50 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _inputReader: {fileID: 11400000, guid: 76666f8c732c13949996edde07dd4cef, type: 2}
   _clientBullet: {fileID: -1593218921365200772, guid: 48737a5715d4c234e925b77b9b0118a5, type: 3}
-  _projectileData: {fileID: 11400000, guid: d88deceed3c35ad48889ea61e22acd1b, type: 2}
+  _bulletType: 0
   _bulletSpawn: {fileID: 2564966512507700848}
   _muzzleObject: {fileID: 5544218351263181846}
   _initBulletPoolCapacity: 10
+  _maxBulletsCapacity: 5
+  BulletInfo:
+    m_InternalValue:
+      PlayerOwner:
+        utf8LengthInBytes: 0
+        bytes:
+          offset0000:
+            byte0000: 0
+            byte0001: 0
+            byte0002: 0
+            byte0003: 0
+            byte0004: 0
+            byte0005: 0
+            byte0006: 0
+            byte0007: 0
+            byte0008: 0
+            byte0009: 0
+            byte0010: 0
+            byte0011: 0
+            byte0012: 0
+            byte0013: 0
+            byte0014: 0
+            byte0015: 0
+          byte0016: 0
+          byte0017: 0
+          byte0018: 0
+          byte0019: 0
+          byte0020: 0
+          byte0021: 0
+          byte0022: 0
+          byte0023: 0
+          byte0024: 0
+          byte0025: 0
+          byte0026: 0
+          byte0027: 0
+          byte0028: 0
+          byte0029: 0
+      Damage: 0
+      Lifetime: 0
+      BulletSpeed: 0
 --- !u!114 &535602698473551975
 MonoBehaviour:
   m_ObjectHideFlags: 0
