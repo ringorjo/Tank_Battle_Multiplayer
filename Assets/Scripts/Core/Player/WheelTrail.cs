@@ -6,17 +6,13 @@ public class WheelTrail : MonoBehaviour, IPoolObject
     [SerializeField]
     private float _lifeSpan = 2f;
     public GameObject GameObject => gameObject;
-    private ObjectPool<WheelTrail> _trailPool;
+    private IResettablePool _trailPool;
     private WaitForSeconds _lifeSpanExecution;
     private bool _isActive = false;
 
     private void Start()
     {
         _lifeSpanExecution = new WaitForSeconds(_lifeSpan);
-    }
-    public void Initialize<TPool>(ObjectPool<TPool> poolManager) where TPool : IPoolObject
-    {
-        _trailPool = poolManager as ObjectPool<WheelTrail>;
     }
 
     public void OnDespawn(Transform parent)
@@ -38,6 +34,11 @@ public class WheelTrail : MonoBehaviour, IPoolObject
     private IEnumerator PerformLifeSpanWheel()
     {
         yield return _lifeSpanExecution;
-        _trailPool.RecycleObject(this);
+        _trailPool.ReturnObjectToPool(this);
+    }
+
+    public void Initialize(IResettablePool pool)
+    {
+        _trailPool = pool;
     }
 }

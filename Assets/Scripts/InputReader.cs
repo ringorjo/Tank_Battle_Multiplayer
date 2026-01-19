@@ -6,7 +6,7 @@ using static Controls;
 [CreateAssetMenu(fileName = "InputReader", menuName = "Scriptable Objects/InputReader")]
 public class InputReader : ScriptableObject, IPlayerActions
 {
-    public event Action<bool> OnFireEvent;
+    public event Action OnFireEvent;
     public event Action<Vector2> OnMoveEvent;
     public event Action<Vector2> OnLookEvent;
     public event Action<bool> OnSpeedEvent;
@@ -31,7 +31,8 @@ public class InputReader : ScriptableObject, IPlayerActions
     public void OnFire(InputAction.CallbackContext context)
     {
         bool isFire = context.performed ? true : false;
-        OnFireEvent?.Invoke(isFire);
+        if (isFire)
+            OnFireEvent?.Invoke();
     }
 
     public void OnLook(InputAction.CallbackContext context)

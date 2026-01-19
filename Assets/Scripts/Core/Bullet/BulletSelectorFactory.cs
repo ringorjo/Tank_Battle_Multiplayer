@@ -23,3 +23,13 @@ public class BulletSelectorFactory
     }
 
 }
+
+// TODO CREAR EL REPOCITORIO PARA LAS BALAS
+// PENSAR EN LA POOL CUANDO SE QUIERA CAMBIAR EL TIPO DE BALA PARA QUE CADA BALA PUEDA INJECTAR 
+// LA INFROMACION ASI COMO CAMBIAR VISUALMENTE EL SPRITE
+// IDEAS: EL SCRIPTABLE TENDRA UN SPRITE JUNTO CON EL ENUM PARA IR CAMBIANDO VISUALMENTE SU SPRITE
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/BulletRepository", order = 1)]
+public class BulletRepository:ScriptableObject
+{
+
+}

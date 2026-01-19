@@ -3,11 +3,9 @@ using UnityEngine;
 
 public class CoinCollector : NetworkBehaviour
 {
+    [SerializeField]
     private Player _player;
-    private void Start()
-    {
-        _player = GetComponent<Player>();
-    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.TryGetComponent(out Coin coin))
@@ -26,12 +24,11 @@ public class CoinCollector : NetworkBehaviour
 
     private void HandleCoinCollector(Coin coin)
     {
-        Debug.Log("HandleCoinCollector: "+ coin.CoinType);
         switch (coin.CoinType)
         {
             case CoinType.Ammo:
                 BulletCoin bulletCoin = (BulletCoin)coin;
-                _player.BulletProvider.ReloadAmmo();
+                _player?.PlayerAmmoProvider.ReloadAmmo();
                 break;
             case CoinType.Life:
                 break;

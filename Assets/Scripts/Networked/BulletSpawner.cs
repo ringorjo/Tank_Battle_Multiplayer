@@ -1,8 +1,10 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class BulletSpawner : NetworkBehaviour
 {
+    public event Action<float> OnFireRateChanged;
     [SerializeField]
     private InputReader _inputReader;
     [SerializeField]
@@ -13,12 +15,14 @@ public class BulletSpawner : NetworkBehaviour
     private Transform _bulletSpawn;
     [SerializeField]
     private GameObject _muzzleObject;
+    [Header("Bullet Settings")]
     [SerializeField]
     private int _initBulletPoolCapacity;
     [SerializeField]
     private int _maxBulletsCapacity;
-    private ObjectPool<BulletBase> _bulletPool;
-    private ServerNetworkSpawnerBulletService _serverBulletService;
+    [SerializeField, Range(0, 1)]
+    private float _fireRateSpeed = .5f;
+    private NetworkServerBulletPool _serverBulletService;
     private Player _player;
     private NetworkObject _serverBulletNetworkObject;
     private BulletSelectorFactory _bulletSelectorFactory;
@@ -48,7 +52,6 @@ public class BulletSpawner : NetworkBehaviour
             _bulletSelectorFactory = new BulletSelectorFactory(5);
             _currentProjectileInfoUsed = _bulletSelectorFactory.GetBulletByType(_bulletType);
             _inputReader.OnFireEvent += OnSpawnBullet;
-
         }
     }
 
@@ -62,34 +65,31 @@ public class BulletSpawner : NetworkBehaviour
 
     private void Start()
     {
-        _bulletPool = new ObjectPool<BulletBase>(_clientBullet.gameObject, _bulletSpawn);
-        _bulletPool.InitPool(_initBulletPoolCapacity, "ClientBullet");
-        _serverBulletService = ServiceLocator.Instance.Get<ServerNetworkSpawnerBulletService>();
+        //_bulletPool = new ObjectPool<BulletBase>(_clientBullet.gameObject, _bulletSpawn);
+        //_bulletPool.InitPool(_initBulletPoolCapacity, "ClientBullet");
+        _serverBulletService = ServiceLocator.Instance.Get<NetworkServerBulletPool>();
         _player = GetComponent<Player>();
     }
 
-    private void OnSpawnBullet(bool ispressed)
+    private void OnSpawnBullet()
     {
-
         BulletInfo.Value = new ProjectileContext
         {
-            PlayerOwner = _player.PlayerName.Value.ToString(),
-            Damage = _currentProjectileInfoUsed.Damage,
-            Lifetime = _currentProjectileInfoUsed.LifeTime,
-            BulletSpeed = _currentProjectileInfoUsed.BulletSpeed
+            ProjectileOwner = _player.PlayerName.Value.ToString(),
+            Damage = _currentProjectileInfoUsed.Damage
         };
+        bool ispressed = false;
         ActionFire(ispressed);
         SpawnBulletServerRpc(ispressed);
-           
+
     }
     private void ActionFire(bool ispressed)
     {
         if (ispressed)
         {
-            _bulletPool.GetObject();
+            //_bulletPool.GetObject();
             UpdateRainingBullet();
         }
-            
     }
 
     [ClientRpc]
@@ -114,25 +114,6 @@ public class BulletSpawner : NetworkBehaviour
         SpawnServerBullet(BulletInfo.Value, isPressed);
     }
 
-    private void UpdateRainingBullet()
-    {
-        if (!IsOwner)
-            return;
-        _currentProjectileInfoUsed?.UpdateRemaingAmmount();
-    }
-
-    public void ReloadAmmo()
-    {
-        if(_currentProjectileInfoUsed==null)
-        {
-            Debug.LogError("CurrentProjectile Info is NUll");
-            return;
-        }
-        _currentProjectileInfoUsed.ReloadAmmo();
-    }
-
-
-
     private void SpawnServerBullet(ProjectileContext bulletInfo, bool isPressed)
     {
         if (!isPressed)
@@ -140,8 +121,27 @@ public class BulletSpawner : NetworkBehaviour
 
         _serverBulletNetworkObject = _serverBulletService.GetServerBullet(_bulletSpawn.position, _bulletSpawn.rotation);
         ServerBullet serverBullet = _serverBulletNetworkObject.GetComponent<ServerBullet>();
-        serverBullet?.SetPlayerOwner(bulletInfo);
+        serverBullet?.SetBulletOwnerInfo(bulletInfo);
         _serverBulletNetworkObject?.Spawn(true);
+    }
 
+    ////// Responsabilidad : Gestionar las balas en el Tanque
+    ///
+
+    private void UpdateRainingBullet()
+    {
+        if (!IsOwner)
+            return;
+        //_currentProjectileInfoUsed?.UpdateRemaingAmmount();
+    }
+    public void ReloadAmmo()
+    {
+        if (_currentProjectileInfoUsed == null)
+        {
+            Debug.LogError("CurrentProjectile Info is NUll");
+            return;
+        }
     }
 }
+
+

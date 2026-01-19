@@ -5,48 +5,81 @@ using UnityEngine.UI;
 
 public class localPlayerHUD : MonoBehaviour
 {
-
+    [SerializeField]
+    private Player _player;
     [SerializeField]
     private TextMeshProUGUI _playerLabel;
 
+    [Header("Health UI")]
     [SerializeField]
     private TextMeshProUGUI _lifeCounter;
+    [SerializeField]
+    private Image _healthBar;
+
+    [Header("Ammo UI")]
 
     [SerializeField]
     private Image _ammoBar;
     [SerializeField]
-    private Image _healthBar;
+    private Image _cooldownFireImage;
+    private float _ammofill;
 
-    private Player _player;
+    private EventBusService _eventBus;
+    private IAmmoProvider _ammoProvider;
+
+    public void SetupLocalPlayer(Player player)
+    {
+        _player = player;
+        _eventBus = ServiceLocator.Instance.Get<EventBusService>();
+        if (_eventBus != null)
+        {
+            _eventBus.Subscribe<int>(nameof(GameplayEvents.ON_LIFE_COUNT_UPDATED), OnLifesUpdated);
+            _eventBus.Subscribe<float>(nameof(GameplayEvents.ON_HEALH_UPDATED), OnHealthUpdated);
+            _eventBus.Subscribe<float>(nameof(GameplayEvents.ON_FIRE_COOLDOWN_UPDATED), (cooldown) =>
+            {
+                _cooldownFireImage.fillAmount = cooldown;
+            });
+        }
+
+        _player.PlayerName.OnValueChanged += OnPlayerUpdated;
+        _ammoProvider = _player.PlayerAmmoProvider;
+        _ammoProvider.OnAmmoChanged += OnAmmoLenghUpdated;
+        OnBulletChanged(null);
+        InitViewData(player);
+    }
 
 
     private void OnDestroy()
     {
         if (_player != null)
         {
-            _player.PlayerStats.CurrentHealth.OnValueChanged -= OnHealthUpdated;
-            _player.PlayerStats.Lives.OnValueChanged -= OnLifesUpdated;
-            _player.BulletProvider.CurrentProjectileInfoUsed.OnBulletRoundsChanged -= OnAmmoLenghUpdated;
             _player.PlayerName.OnValueChanged -= OnPlayerUpdated;
+            _player.PlayerAmmoProvider.OnAmmoChanged -= OnAmmoLenghUpdated;
+        }
+        if (_eventBus != null)
+        {
+            _eventBus.UnSusbcribe<int>(nameof(GameplayEvents.ON_LIFE_COUNT_UPDATED), OnLifesUpdated);
+            _eventBus.UnSusbcribe<IProjectileInfo>(nameof(GameplayEvents.ON_BULLET_TYPE_CHANGED), OnBulletChanged);
+            _eventBus.UnSusbcribe<float>(nameof(GameplayEvents.ON_HEALH_UPDATED), OnHealthUpdated);
         }
     }
 
-    public void SetupLocalPlayer(Player player)
+
+    private void OnBulletChanged(IProjectileInfo info)
     {
-        _player = player;
-        _player.PlayerStats.CurrentHealth.OnValueChanged += OnHealthUpdated;
-        _player.PlayerStats.Lives.OnValueChanged += OnLifesUpdated;
-        _player.BulletProvider.CurrentProjectileInfoUsed.OnBulletRoundsChanged += OnAmmoLenghUpdated;
-        _player.PlayerName.OnValueChanged += OnPlayerUpdated;
-        InitViewData(player);
+        if (_ammoProvider == null)
+        {
+            Debug.LogError("IAmmoProvider is null");
+            return;
+        }
+        OnAmmoLenghUpdated(_ammoProvider.CurrentAmmo);
     }
 
     private void InitViewData(Player player)
     {
         OnPlayerUpdated(string.Empty, player.PlayerName.Value);
-        OnLifesUpdated(0, player.PlayerStats.Lives.Value);
-        OnAmmoLenghUpdated(player.BulletProvider.CurrentProjectileInfoUsed.RoundsRemaining);
-        OnHealthUpdated(0, player.PlayerStats.CurrentHealth.Value);
+        OnLifesUpdated(player.PlayerStats.Lives.Value);
+        OnHealthUpdated(player.PlayerStats.CurrentHealth.Value);
     }
 
     private void OnPlayerUpdated(FixedString32Bytes previousValue, FixedString32Bytes newValue)
@@ -54,18 +87,18 @@ public class localPlayerHUD : MonoBehaviour
         _playerLabel.text = newValue.ToString();
     }
 
-    private void OnLifesUpdated(int previousValue, int newValue)
+    private void OnLifesUpdated(int lifeCount)
     {
-        _lifeCounter.text = newValue.ToString();
+        _lifeCounter.text = lifeCount.ToString();
     }
 
-    float ammofill;
-    private void OnAmmoLenghUpdated( int reamainingAmmo)
+
+    private void OnAmmoLenghUpdated(int reamainingAmmo)
     {
-        ammofill = (float)reamainingAmmo / _player.BulletProvider.CurrentProjectileInfoUsed.MaxAmmoCount;
-        _ammoBar.fillAmount = ammofill;
+        _ammofill = (float)reamainingAmmo / _ammoProvider.MaxAmmo;
+        _ammoBar.fillAmount = _ammofill;
     }
 
-    private void OnHealthUpdated(float previousValue, float newValue) => _healthBar.fillAmount = (float)newValue / _player.PlayerStats.MaxHealth;
+    private void OnHealthUpdated(float newValue) => _healthBar.fillAmount = (float)newValue / _player.PlayerStats.MaxHealth;
 
 }
