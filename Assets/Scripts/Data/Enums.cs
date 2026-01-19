@@ -1,0 +1,21 @@
+
+public enum NetworkEvents
+{
+    ON_SERVER_BULLET_FIRED,
+    ON_LOCAL_BULLET_FIRED,
+    ON_AMMO_UPDATED
+
+}
+
+public enum GameplayEvents
+{
+    ON_PERFORM_SHOOT,
+    ON_BULLET_TYPE_CHANGED,
+    ON_LIFE_COUNT_UPDATED,
+    ON_FIRE_COOLDOWN_UPDATED,
+    ON_WEAPON_AMMO_RELOADED,
+    ON_HEALH_UPDATED
+
+}
+
+

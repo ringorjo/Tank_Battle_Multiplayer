@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class ServerNetworkSpawnerBulletService : MonoBehaviour, IService
+public class NetworkServerBulletPool : MonoBehaviour, IService
 {
     [SerializeField]
     private NetworkObject _serverBulletPrefab;

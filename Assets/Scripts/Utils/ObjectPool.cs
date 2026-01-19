@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool<T> where T : IPoolObject
+public class ObjectPool<T> : IResettablePool where T : IPoolObject
 {
     private Queue<T> _pool;
     private GameObject _prefab;
@@ -30,6 +30,14 @@ public class ObjectPool<T> where T : IPoolObject
         }
     }
 
+    public void SetPoolParent(Transform parent)
+    {
+        _parent = parent;
+    }
+    public void SetPrefabPool(GameObject prefab)
+    {
+        _prefab = prefab;
+    }
     public T GetObject()
     {
         T ob = default;
@@ -37,11 +45,9 @@ public class ObjectPool<T> where T : IPoolObject
         {
             ob = _pool.Dequeue();
             ob.GameObject.SetActive(true);
-            ob.OnSpawn();
             return ob;
         }
         ob = CreateObject();
-        ob.OnSpawn();
         return ob;
     }
 
@@ -55,11 +61,9 @@ public class ObjectPool<T> where T : IPoolObject
             ob.GameObject.SetActive(true);
             ob.GameObject.transform.position = position;
             ob.GameObject.transform.rotation = rotation;
-            ob.OnSpawn();
             return ob;
         }
         ob = CreateObject();
-        ob.OnSpawn();
         return ob;
     }
 
@@ -79,5 +83,10 @@ public class ObjectPool<T> where T : IPoolObject
         ob.GameObject.transform.localPosition = Vector3.zero;
         ob.GameObject.transform.localRotation = Quaternion.identity;
         _pool.Enqueue(ob);
+    }
+
+    public void ReturnObjectToPool(IPoolObject ob)
+    {
+        RecycleObject((T)ob);
     }
 }

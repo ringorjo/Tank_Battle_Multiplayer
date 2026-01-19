@@ -45,4 +45,9 @@ public class ServiceLocator
         return (T)_serviceMap[typeof(T)];
 
     }
+
+    public bool Exists<T>() where T : IService
+    {
+        return _serviceMap.ContainsKey(typeof(T));
+    }
 }

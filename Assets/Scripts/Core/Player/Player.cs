@@ -22,23 +22,30 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
     private GameObject _camera;
 
     private SessionManagerService _sessionManagerService;
-    private BulletSpawner _bulletProvider;
 
     private PlayerStats _playerStats;
+    private IAmmoProvider _playerAmmoProvider;
     public PlayerStats PlayerStats
     {
         get => _playerStats;
     }
-    public BulletSpawner BulletProvider
+
+    public IAmmoProvider PlayerAmmoProvider
     {
-        get => _bulletProvider;
+        get => _playerAmmoProvider;
     }
+
+    private EventBusService eventBusService;
 
     private void Awake()
     {
+        _playerAmmoProvider = GetComponent<IAmmoProvider>();
         _sessionManagerService = ServiceLocator.Instance.Get<SessionManagerService>();
         _playerStats = GetComponent<PlayerStats>();
-        _bulletProvider = GetComponent<BulletSpawner>();
+    }
+    private void Start()
+    {
+        eventBusService = ServiceLocator.Instance.Get<EventBusService>();
     }
 
     public override void OnNetworkSpawn()
@@ -47,9 +54,15 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
         if (IsOwner)
         {
             Register();
+            _playerStats.CurrentHealth.OnValueChanged += OnHealthChanged;
             return;
         }
         Destroy(_camera);
+    }
+
+    private void OnHealthChanged(float previousValue, float newValue)
+    {
+        eventBusService?.Broadcast(nameof(GameplayEvents.ON_HEALH_UPDATED), newValue);
     }
 
     private IEnumerator WaitForSetup()
@@ -79,12 +92,13 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
         if (IsOwner)
         {
             Unregister();
+            _playerStats.CurrentHealth.OnValueChanged -= OnHealthChanged;
         }
     }
 
     public void TakeDamage(ProjectileContext bulletInfo)
     {
-        if (!IsServer || bulletInfo.PlayerOwner == PlayerName.Value)
+        if (!IsServer || bulletInfo.ProjectileOwner == PlayerName.Value)
         {
             return;
         }

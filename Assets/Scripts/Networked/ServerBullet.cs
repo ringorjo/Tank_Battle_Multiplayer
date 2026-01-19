@@ -5,26 +5,19 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
 {
     [SerializeField]
     protected Rigidbody2D _rb;
-    [SerializeField]
-    protected ProjectileData _projectileData;
     private ProjectileContext _bulletInfo;
-    private ObjectPool<ServerBullet> _objectPool;
+    private IResettablePool _objectPool;
     public GameObject GameObject => gameObject;
-
-    public void Initialize<TPool>(ObjectPool<TPool> poolManager) where TPool : IPoolObject
-    {
-        _objectPool = poolManager as ObjectPool<ServerBullet>;
-    }
 
     public void OnSpawn()
     {
         // transform.SetParent(null);
     }
 
-    public void SetPlayerOwner(ProjectileContext bulletInfo)
+    public void Initialize(IResettablePool pool) => _objectPool = pool;
+    public void SetBulletOwnerInfo(ProjectileContext bulletInfo)
     {
-        Debug.Log($"Owner: {bulletInfo.PlayerOwner}");
-
+        Debug.Log($"Owner: {bulletInfo.ProjectileOwner}");
         _bulletInfo = bulletInfo;
     }
 
@@ -44,8 +37,8 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
             return;
 
 
-        Invoke(nameof(OnDestroyBullet), _projectileData.LifeTime);
-        _rb.linearVelocity = transform.up * _projectileData.Speed;
+        Invoke(nameof(OnDestroyBullet), _bulletInfo.Lifetime);
+        _rb.linearVelocity = transform.up * _bulletInfo.BulletSpeed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -64,4 +57,5 @@ public class ServerBullet : NetworkBehaviour, IPoolObject
             return;
         NetworkObject.Despawn();
     }
+
 }

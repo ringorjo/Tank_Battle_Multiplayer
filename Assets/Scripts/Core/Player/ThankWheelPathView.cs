@@ -13,10 +13,10 @@ public class ThankWheelPathView : MonoBehaviour
     [Header("Settings")]
     [SerializeField]
     private float _pathDrawTolerance;
-    [SerializeField,Range(0,2)]
+    [SerializeField, Range(0, 2)]
     private float _updateInterval = 0.1f;
     [SerializeField]
-    private int _initPool=10;
+    private int _initPool = 10;
     private ObjectPool<WheelTrail> _trailPool;
     private Transform _wheelParent;
     private Vector3 _lastParentPos;
@@ -47,7 +47,9 @@ public class ThankWheelPathView : MonoBehaviour
             }
             yield return _updateWait;
             WheelTrail leftTrail = _trailPool.GetObject(_leftWheel.position, _wheelParent.rotation);
+            leftTrail.OnSpawn();
             WheelTrail rightTrail = _trailPool.GetObject(_rightWheel.position, _wheelParent.rotation);
+            rightTrail.OnSpawn();
             _lastParentPos = _wheelParent.position;
         }
     }

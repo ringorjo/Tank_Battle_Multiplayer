@@ -208,7 +208,6 @@ GameObject:
   m_Component:
   - component: {fileID: 206496385}
   - component: {fileID: 206496386}
-  - component: {fileID: 206496384}
   - component: {fileID: 206496387}
   m_Layer: 0
   m_Name: ServerBulletSpawner
@@ -217,20 +216,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &206496384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 206496382}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d2602cf7fe0d124dbb25429ea142c56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _serverBulletPrefab: {fileID: 1264377284062052257, guid: dada3cc3f76b55745bfc316fcc9b4c98, type: 3}
-  _initBulletPoolCapacity: 10
 --- !u!4 &206496385
 Transform:
   m_ObjectHideFlags: 0
@@ -280,9 +265,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 206496382}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c916229d4ad3557409f37f09cc23948a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d2602cf7fe0d124dbb25429ea142c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _serverBulletPrefab: {fileID: 1264377284062052257, guid: dada3cc3f76b55745bfc316fcc9b4c98, type: 3}
+  _initBulletPoolCapacity: 10
 --- !u!1001 &243419040
 PrefabInstance:
   m_ObjectHideFlags: 0
