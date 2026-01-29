@@ -17,6 +17,8 @@ public class Player : NetworkBehaviour, IDamage, IHealeable, IService
     [HideInInspector]
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
 
+    public NetworkVariable<Color> PlayerColor= new NetworkVariable<Color>();
+
     [Header("PlayerCamera")]
     [SerializeField]
     private GameObject _camera;

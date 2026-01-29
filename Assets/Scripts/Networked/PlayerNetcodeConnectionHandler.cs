@@ -1,9 +1,12 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerSpawner : MonoBehaviour
+public class PlayerNetcodeConnectionHandler : MonoBehaviour
 {
+    [SerializeField]
+    private PlayerSpawnController _spawnController;
     private void Start()
     {
         /// This callback is invoked on the server when a new client connects or Local Client is Connected.
@@ -26,8 +29,14 @@ public class PlayerSpawner : MonoBehaviour
         if (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
             player.SetupPlayer(ownerClienId + 1);
+            Transform spawnPoint = _spawnController?.AddPlayerSpawn(player.PlayerOwnerId.Value);
+            player.GetComponent<TankMovement>().SpawnClientRpc(spawnPoint.position);
+
         }
         await Task.Delay(200); // Wait for the PlayerName to be set
+
         player.name = player.PlayerName.Value.ToString();
     }
 }
+
+

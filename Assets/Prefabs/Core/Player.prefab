@@ -11222,11 +11222,11 @@ GameObject:
   - component: {fileID: 3775801249545359882}
   - component: {fileID: 6627686693586973803}
   - component: {fileID: 5191962433575919169}
-  - component: {fileID: 7797549712265506445}
   - component: {fileID: 6928499423713854555}
   - component: {fileID: 6818532015062977736}
   - component: {fileID: 6333922083272523959}
   - component: {fileID: 5130241251873428652}
+  - component: {fileID: 7797549712265506445}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -11403,6 +11403,8 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+  PlayerColor:
+    m_InternalValue: {r: 0, g: 0, b: 0, a: 0}
   _camera: {fileID: 8291613817249594443}
 --- !u!114 &2231745821138057606
 MonoBehaviour:
@@ -11504,6 +11506,65 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 0
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &6928499423713854555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37deae99e9d716e46935bc58c39f7808, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _engineAudioSource: {fileID: 7797549712265506445}
+  _neutroClip: {fileID: 8300000, guid: 10c35ffd0e2567d44aac8ecf666334db, type: 3}
+  _movementClip: {fileID: 8300000, guid: 607db52265d0cf54f8061c1cd86e2bb0, type: 3}
+  _limitPitch: {x: 1, y: 1.8}
+  _tankMovement: {fileID: 6627686693586973803}
+--- !u!114 &6818532015062977736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf586958d090cc4fb9009dc7700c6c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputReader: {fileID: 11400000, guid: 76666f8c732c13949996edde07dd4cef, type: 2}
+  _bulletType: 0
+  _maxAmmo: 5
+--- !u!114 &6333922083272523959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef39baabc58f40408f8386607f1a850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bulletnetcodeHandler: {fileID: 6023579677270308183}
+--- !u!114 &5130241251873428652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209291034038932970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325c122b5ff0e884499f08d77aae8889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  _player: {fileID: 234596215538730256}
 --- !u!82 &7797549712265506445
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11601,62 +11662,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6928499423713854555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209291034038932970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37deae99e9d716e46935bc58c39f7808, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _engineAudioSource: {fileID: 7797549712265506445}
-  _neutroClip: {fileID: 8300000, guid: 10c35ffd0e2567d44aac8ecf666334db, type: 3}
-  _movementClip: {fileID: 8300000, guid: 607db52265d0cf54f8061c1cd86e2bb0, type: 3}
-  _limitPitch: {x: 1, y: 1.8}
-  _tankMovement: {fileID: 6627686693586973803}
---- !u!114 &6818532015062977736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209291034038932970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbf586958d090cc4fb9009dc7700c6c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _inputReader: {fileID: 11400000, guid: 76666f8c732c13949996edde07dd4cef, type: 2}
-  _bulletType: 0
-  _maxAmmo: 5
---- !u!114 &6333922083272523959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209291034038932970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eef39baabc58f40408f8386607f1a850, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bulletnetcodeHandler: {fileID: 6023579677270308183}
---- !u!114 &5130241251873428652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209291034038932970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 325c122b5ff0e884499f08d77aae8889, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  _player: {fileID: 234596215538730256}

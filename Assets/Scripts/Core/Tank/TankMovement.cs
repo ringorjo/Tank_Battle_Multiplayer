@@ -73,4 +73,12 @@ public class TankMovement : NetworkBehaviour
     {
         _currentDirection = vector;
     }
+    [ClientRpc]
+    public void SpawnClientRpc(Vector2 vector)
+    {
+        if (!IsOwner)
+            return;
+        transform.position = vector;
+    }
+
 }
